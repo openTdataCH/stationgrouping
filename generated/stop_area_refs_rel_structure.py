@@ -1,0 +1,31 @@
+from dataclasses import dataclass, field
+from typing import List
+
+from generated.one_to_many_relationship_structure import (
+    OneToManyRelationshipStructure,
+)
+from generated.stop_area_ref_structure import StopAreaRefStructure
+
+__NAMESPACE__ = "http://www.netex.org.uk/netex"
+
+
+@dataclass(kw_only=True)
+class StopAreaRefsRelStructure(OneToManyRelationshipStructure):
+    """
+    Type for a list of STOP AREAs.
+
+    :ivar stop_area_ref: Reference to the identifier of a stop area.
+    """
+
+    class Meta:
+        name = "stopAreaRefs_RelStructure"
+
+    stop_area_ref: List[StopAreaRefStructure] = field(
+        default_factory=list,
+        metadata={
+            "name": "StopAreaRef",
+            "type": "Element",
+            "namespace": "http://www.netex.org.uk/netex",
+            "min_occurs": 1,
+        },
+    )

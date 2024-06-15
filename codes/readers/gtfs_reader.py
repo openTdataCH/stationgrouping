@@ -1,0 +1,641 @@
+#---Imports----------------------------------
+import os
+
+#---Pre-variables----------------------------
+dict_agency = {}
+dict_calendar_dates = {}
+dict_calendar = {}
+dict_routes = {}
+dict_shapes = {}
+dict_stop_times = {}
+dict_stops = {}
+dict_transfers = {}
+dict_trips = {}
+
+#---Pre-functions----------------------------
+def read_agency(path):
+    file = open(path, "r")
+    firstline = True
+    count = 0
+    for line in file:
+        parts = line.strip().split(",")
+        if firstline == True:
+            for element in parts:
+                # agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url
+                if element == "agency_id":
+                    agency_id_nr = count
+                    count += 1
+                elif element == "agency_name":
+                    agency_name_nr = count
+                    count += 1
+                elif element == "agency_url":
+                    agency_url_nr = count
+                    count += 1
+                elif element == "agency_timezone":
+                    agency_timezone_nr = count
+                    count += 1
+                elif element == "agency_lang":
+                    agency_lang_nr = count
+                    count += 1
+                elif element == "agency_phone":
+                    agency_phone_nr = count
+                    count += 1
+                elif element == "agency_fare_url":              # Abweichung von Beschreibung
+                    agency_fare_url_nr = count
+                    count += 1
+            firstline = False
+        else:
+            if parts[agency_name_nr] == '':
+                agency_name = None
+            else:
+                agency_name = parts[agency_name_nr]
+            if parts[agency_url_nr] == '':
+                agency_url = None
+            else:
+                agency_url = parts[agency_url_nr]
+            if parts[agency_timezone_nr] == '':
+                agency_timezone = None
+            else:
+                agency_timezone = parts[agency_timezone_nr]
+            if parts[agency_lang_nr] == '':
+                agency_lang = None
+            else:
+                agency_lang = parts[agency_lang_nr]
+            if parts[agency_phone_nr] == '':
+                agency_phone = None
+            else:
+                agency_phone = parts[agency_phone_nr]
+            if parts[agency_fare_url_nr] == '':
+                agency_fare_url = None
+            else:
+                agency_fare_url = parts[agency_fare_url_nr]
+            dict_agency[parts[agency_id_nr]] = [agency_name, agency_url, agency_timezone, agency_lang, agency_phone, agency_fare_url]
+    file.close
+
+def read_calendar_dates(path):
+    file = open(path, "r")
+    firstline = True
+    count = 0
+    for line in file:
+        parts = line.strip().split(",")
+        if firstline == True:
+            for element in parts:
+                # service_id,date,exception_type
+                if element == "service_id":
+                    service_id_nr = count
+                    count += 1
+                elif element == "date":
+                    date_nr = count
+                    count += 1
+                elif element == "exception_type":
+                    exception_type_nr = count
+                    count += 1
+            firstline = False
+        else:
+            if parts[date_nr] == '':
+                date = None
+            else:
+                date = parts[date_nr]
+            if parts[exception_type_nr] == '':
+                exception_type = None
+            else:
+                exception_type = parts[exception_type_nr]
+            if parts[service_id_nr] in dict_calendar_dates:
+                dict_calendar_dates[parts[service_id_nr]].append([date, exception_type])
+            else:
+                dict_calendar_dates[parts[service_id_nr]] = [[date, exception_type]]
+    file.close
+
+def read_calendar(path):
+    file = open(path, "r")
+    firstline = True
+    count = 0
+    for line in file:
+        parts = line.strip().split(",")
+        if firstline == True:
+            for element in parts:
+                # service_id,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date
+                if element == "service_id":
+                    service_id_nr = count
+                    count += 1
+                elif element == "monday":
+                    monday_nr = count
+                    count += 1
+                elif element == "tuesday":
+                    tuesday_nr = count
+                    count += 1
+                elif element == "wednesday":
+                    wednesday_nr = count
+                    count += 1
+                elif element == "thursday":
+                    thursday_nr = count
+                    count += 1
+                elif element == "friday":
+                    friday_nr = count
+                    count += 1
+                elif element == "saturday":
+                    saturday_nr = count
+                    count += 1
+                elif element == "sunday":
+                    sunday_nr = count
+                    count += 1
+                elif element == "start_date":
+                    start_date_nr = count
+                    count += 1
+                elif element == "end_date":
+                    end_date_nr = count
+                    count += 1
+            firstline = False
+        else:
+            if parts[monday_nr] == '':
+                monday = None
+            else:
+                monday = parts[monday_nr]
+            if parts[tuesday_nr] == '':
+                tuesday = None
+            else:
+                tuesday = parts[tuesday_nr]
+            if parts[wednesday_nr] == '':
+                wednesday = None
+            else:
+                wednesday = parts[wednesday_nr]
+            if parts[thursday_nr] == '':
+                thursday = None
+            else:
+                thursday = parts[thursday_nr]
+            if parts[friday_nr] == '':
+                friday = None
+            else:
+                friday = parts[friday_nr]
+            if parts[saturday_nr] == '':
+                saturday = None
+            else:
+                saturday = parts[saturday_nr]
+            if parts[sunday_nr] == '':
+                sunday = None
+            else:
+                sunday = parts[sunday_nr]
+            if parts[start_date_nr] == '':
+                start_date = None
+            else:
+                start_date = parts[start_date_nr]
+            if parts[end_date_nr] == '':
+                end_date = None
+            else:
+                end_date = parts[end_date_nr]
+            dict_calendar[parts[service_id_nr]] = [monday, tuesday, wednesday, thursday, friday, saturday, sunday, start_date, end_date]
+    file.close
+
+def read_fare_attribute(path):                  # Beispiel finden
+    pass
+
+def read_fare_rule(path):                       # Beispiel finden
+    pass
+
+def read_frequencies(path):                     # Beispiel finden
+    pass
+
+def read_routes(path):
+    file = open(path, "r")
+    firstline = True
+    count = 0
+    for line in file:
+        parts = line.strip().split(",")
+        if firstline == True:
+            for element in parts:
+                # agency_id,route_id,route_short_name,route_long_name,route_type,route_desc,route_url,route_color,route_text_color,route_sort_order
+                if element == "route_id":
+                    route_id_nr = count
+                    count += 1
+                elif element == "agency_id":
+                    agency_id_nr = count
+                    count += 1
+                elif element == "route_short_name":
+                    route_short_name_nr = count
+                    count += 1
+                elif element == "route_long_name":
+                    route_long_name_nr = count
+                    count += 1
+                elif element == "route_type":
+                    route_type_nr = count
+                    count += 1
+                elif element == "route_desc":
+                    route_desc_nr = count
+                    count += 1
+                elif element == "route_url":
+                    route_url_nr = count
+                    count += 1
+                elif element == "route_color":
+                    route_color_nr = count
+                    count += 1
+                elif element == "route_text_color":
+                    route_text_color_nr = count
+                    count += 1
+                elif element == "route_sort_order":
+                    route_sort_order_nr = count
+                    count += 1
+            firstline = False
+        else:
+            if parts[agency_id_nr] == '':
+                agency_id = None
+            else:
+                agency_id = parts[agency_id_nr]
+            if parts[route_short_name_nr] == '':
+                route_short_name = None
+            else:
+                route_short_name = parts[route_short_name_nr]
+            if parts[route_long_name_nr] == '':
+                route_long_name = None
+            else:
+                route_long_name = parts[route_long_name_nr]
+            if parts[route_type_nr] == '':
+                route_type = None
+            else:
+                route_type = parts[route_type_nr]
+            if parts[route_desc_nr] == '':
+                route_desc = None
+            else:
+                route_desc = parts[route_desc_nr]
+            if parts[route_url_nr] == '':
+                route_url = None
+            else:
+                route_url = parts[route_url_nr]
+            if parts[route_color_nr] == '':
+                route_color = None
+            else:
+                route_color = parts[route_color_nr]
+            if parts[route_text_color_nr] == '':
+                route_text_color = None
+            else:
+                route_text_color = parts[route_text_color_nr]
+            if parts[route_sort_order_nr] == '':
+                route_sort_order = None
+            else:
+                route_sort_order = parts[route_sort_order_nr]
+            dict_routes[parts[route_id_nr]] = [agency_id, route_short_name, route_long_name, route_type, route_desc, route_url, route_color, route_text_color, route_sort_order]
+    file.close
+
+def read_shapes(path):
+    file = open(path, "r")
+    firstline = True
+    count = 0
+    for line in file:
+        parts = line.strip().split(",")
+        if firstline == True:
+            for element in parts:
+                # shape_id,shape_pt_sequence,shape_pt_lat,shape_pt_lon
+                if element == "shape_id":
+                    shape_id_nr = count
+                    count += 1
+                elif element == "shape_pt_sequence":
+                    shape_pt_sequence_nr = count
+                    count += 1
+                elif element == "shape_pt_lat":
+                    shape_pt_lat_nr = count
+                    count += 1
+                elif element == "shape_pt_lon":
+                    shape_pt_lon_nr = count
+                    count += 1
+            firstline = False
+        else:
+            if parts[shape_pt_sequence_nr] == '':
+                shape_pt_sequence = None
+            else:
+                shape_pt_sequence = parts[shape_pt_sequence_nr]
+            if parts[shape_pt_lat_nr] == '':
+                shape_pt_lat = None
+            else:
+                shape_pt_lat = parts[shape_pt_lat_nr]
+            if parts[shape_pt_lon_nr] == '':
+                shape_pt_lon = None
+            else:
+                shape_pt_lon = parts[shape_pt_lon_nr]
+            if parts[shape_id_nr] in dict_shapes:
+                dict_shapes[parts[shape_id_nr]].append([shape_pt_sequence, shape_pt_lat, shape_pt_lon])
+            else:
+                dict_shapes[parts[shape_id_nr]] = [[shape_pt_sequence, shape_pt_lat, shape_pt_lon]]
+    file.close
+
+def read_stop_times(path):
+    file = open(path, "r")
+    firstline = True
+    count = 0
+    for line in file:
+        parts = line.strip().split(",")
+        if firstline == True:
+            for element in parts:
+                # trip_id,stop_id,arrival_time,departure_time,stop_sequence,stop_headsign,pickup_type,drop_off_type,shape_dist_traveled,departure_buffer
+                if element == "trip_id":
+                    trip_id_nr = count
+                    count += 1
+                elif element == "stop_id":
+                    stop_id_nr = count
+                    count += 1
+                elif element == "arrival_time":
+                    arrival_time_nr = count
+                    count += 1
+                elif element == "departure_time":
+                    departure_time_nr = count
+                    count += 1
+                elif element == "stop_sequence":
+                    stop_sequence_nr = count
+                    count += 1
+                elif element == "stop_headsign":
+                    stop_headsign_nr = count
+                    count += 1
+                elif element == "pickup_type":
+                    pickup_type_nr = count
+                    count += 1
+                elif element == "drop_off_type":
+                    drop_off_type_nr = count
+                    count += 1
+                elif element == "shape_dist_traveled":
+                    shape_dist_traveled_nr = count
+                    count += 1
+                elif element == "departure_buffer":
+                    departure_buffer_nr = count
+                    count += 1
+            firstline = False
+        else:
+            if parts[stop_id_nr] == '':
+                stop_id = None
+            else:
+                stop_id = parts[stop_id_nr]
+            if parts[arrival_time_nr] == '':
+                arrival_time = None
+            else:
+                arrival_time = parts[arrival_time_nr]
+            if parts[departure_time_nr] == '':
+                departure_time = None
+            else:
+                departure_time = parts[departure_time_nr]
+            if parts[stop_sequence_nr] == '':
+                stop_sequence = None
+            else:
+                stop_sequence = parts[stop_sequence_nr]
+            if parts[stop_headsign_nr] == '':
+                stop_headsign = None
+            else:
+                stop_headsign = parts[stop_headsign_nr]
+            if parts[pickup_type_nr] == '':
+                pickup_type = None
+            else:
+                pickup_type = parts[pickup_type_nr]
+            if parts[drop_off_type_nr] == '':
+                drop_off_type = None
+            else:
+                drop_off_type = parts[drop_off_type_nr]
+            if parts[shape_dist_traveled_nr] == '':
+                shape_dist_traveled = None
+            else:
+                shape_dist_traveled = parts[shape_dist_traveled_nr]
+            if parts[departure_buffer_nr] == '':
+                departure_buffer = None
+            else:
+                departure_buffer = parts[departure_buffer_nr]
+            if parts[trip_id_nr] in dict_stop_times:
+                dict_stop_times[parts[trip_id_nr]].append([stop_id, arrival_time, departure_time, stop_sequence, stop_headsign, drop_off_type, shape_dist_traveled, departure_buffer])
+            else:
+                dict_stop_times[parts[trip_id_nr]] = [[stop_id, arrival_time, departure_time, stop_sequence, stop_headsign, drop_off_type, shape_dist_traveled, departure_buffer]]
+    file.close
+
+def read_stops(path):
+    file = open(path, "r")
+    firstline = True
+    count = 0
+    for line in file:
+        parts = line.strip().split(",")
+        if firstline == True:
+            for element in parts:
+                # stop_id,stop_name,stop_lat,stop_lon,stop_code,stop_desc,zone_id,location_type,parent_station,wheelchair_boarding
+                if element == "stop_id":
+                    stop_id_nr = count
+                    count += 1
+                elif element == "stop_name":
+                    stop_name_nr = count
+                    count += 1
+                elif element == "stop_lat":
+                    stop_lat_nr = count
+                    count += 1
+                elif element == "stop_lon":
+                    stop_lon_nr = count
+                    count += 1
+                elif element == "stop_code":
+                    stop_code_nr = count
+                    count += 1
+                elif element == "stop_desc":
+                    stop_desc_nr = count
+                    count += 1
+                elif element == "zone_id":
+                    zone_id_nr = count
+                    count += 1
+                elif element == "location_type":
+                    location_type_nr = count
+                    count += 1
+                elif element == "parent_station":
+                    parent_station_nr = count
+                    count += 1
+                elif element == "wheelchair_boarding":
+                    wheelchair_boarding_nr = count
+                    count += 1
+            firstline = False
+        else:
+            if parts[stop_name_nr] == '':
+                stop_name = None
+            else:
+                stop_name = parts[stop_name_nr]
+            if parts[stop_lat_nr] == '':
+                stop_lat = None
+            else:
+                stop_lat = parts[stop_lat_nr]
+            if parts[stop_lon_nr] == '':
+                stop_lon = None
+            else:
+                stop_lon = parts[stop_lon_nr]
+            if parts[stop_code_nr] == '':
+                stop_code = None
+            else:
+                stop_code = parts[stop_code_nr]
+            if parts[stop_desc_nr] == '':
+                stop_desc = None
+            else:
+                stop_desc = parts[stop_desc_nr]
+            if parts[zone_id_nr] == '':
+                zone_id = None
+            else:
+                zone_id = parts[zone_id_nr]
+            if parts[location_type_nr] == '':
+                location_type = None
+            else:
+                location_type = parts[location_type_nr]
+            if parts[parent_station_nr] == '':
+                parent_station = None
+            else:
+                parent_station = parts[parent_station_nr]
+            if parts[wheelchair_boarding_nr] == '':
+                wheelchair_boarding = None
+            else:
+                wheelchair_boarding = parts[wheelchair_boarding_nr]
+            dict_stops[parts[stop_id_nr]] = [stop_name, stop_lat, stop_lon, stop_code, stop_desc, zone_id, location_type, parent_station, wheelchair_boarding]
+    file.close
+
+def read_transfers(path):
+    file = open(path, "r")
+    firstline = True
+    count = 0
+    for line in file:
+        parts = line.strip().split(",")
+        if firstline == True:
+            for element in parts:
+                # from_stop_id,to_stop_id,transfer_type,min_transfer_time
+                if element == "from_stop_id":
+                    from_stop_id_nr = count
+                    count += 1
+                elif element == "to_stop_id":
+                    to_stop_id_nr = count
+                    count += 1
+                elif element == "transfer_type":
+                    transfer_type_nr = count
+                    count += 1
+                elif element == "min_transfer_time":
+                    min_transfer_time_nr = count
+                    count += 1
+            firstline = False
+        else:
+            if parts[to_stop_id_nr] == '':
+                to_stop_id = None
+            else:
+                to_stop_id = parts[to_stop_id_nr]
+            if parts[transfer_type_nr] == '':
+                transfer_type = None
+            else:
+                transfer_type = parts[transfer_type_nr]
+            if parts[min_transfer_time_nr] == '':
+                min_transfer_time = None
+            else:
+                min_transfer_time = parts[min_transfer_time_nr]
+            if parts[from_stop_id_nr] in dict_transfers:
+                dict_transfers[parts[from_stop_id_nr]].append([to_stop_id, transfer_type, min_transfer_time])
+            else:
+                dict_transfers[parts[from_stop_id_nr]] = [[to_stop_id, transfer_type, min_transfer_time]]
+    file.close
+
+def read_trips(path):
+    file = open(path, "r")
+    firstline = True
+    count = 0
+    for line in file:
+        parts = line.strip().split(",")
+        if firstline == True:
+            for element in parts:
+                # route_id,trip_id,service_id,trip_short_name,trip_headsign,direction_id,shape_id,wheelchair_accessible,bikes_allowed,peak_offpeak
+                if element == "route_id":
+                    route_id_nr = count
+                    count += 1
+                elif element == "trip_id":
+                    trip_id_nr = count
+                    count += 1
+                elif element == "service_id":
+                    service_id_nr = count
+                    count += 1
+                elif element == "trip_short_name":
+                    trip_short_name_nr = count
+                    count += 1
+                elif element == "trip_headsign":
+                    trip_headsign_nr = count
+                    count += 1
+                elif element == "direction_id":
+                    direction_id_nr = count
+                    count += 1
+                elif element == "shape_id":
+                    shape_id_nr = count
+                    count += 1
+                elif element == "wheelchair_accessible":
+                    wheelchair_accessible_nr = count
+                    count += 1
+                elif element == "bikes_allowed":
+                    bikes_allowed_nr = count
+                    count += 1
+                elif element == "peak_offpeak":
+                    peak_offpeak_nr = count
+                    count += 1
+            firstline = False
+        else:
+            if parts[trip_id_nr] == '':
+                trip_id = None
+            else:
+                trip_id = parts[trip_id_nr]
+            if parts[service_id_nr] == '':
+                service_id = None
+            else:
+                service_id = parts[service_id_nr]
+            if parts[trip_short_name_nr] == '':
+                trip_short_name = None
+            else:
+                trip_short_name = parts[trip_short_name_nr]
+            if parts[trip_headsign_nr] == '':
+                trip_headsign = None
+            else:
+                trip_headsign = parts[trip_headsign_nr]
+            if parts[direction_id_nr] == '':
+                direction_id = None
+            else:
+                direction_id = parts[direction_id_nr]
+            if parts[shape_id_nr] == '':
+                shape_id = None
+            else:
+                shape_id = parts[shape_id_nr]
+            if parts[wheelchair_accessible_nr] == '':
+                wheelchair_accessible = None
+            else:
+                wheelchair_accessible = parts[wheelchair_accessible_nr]
+            if parts[bikes_allowed_nr] == '':
+                bikes_allowed = None
+            else:
+                bikes_allowed = parts[bikes_allowed_nr]
+            if parts[peak_offpeak_nr] == '':
+                peak_offpeak = None
+            else:
+                peak_offpeak = parts[peak_offpeak_nr]
+            if parts[route_id_nr] in dict_trips:
+                dict_trips[parts[route_id_nr]].append([trip_id, service_id, trip_short_name, trip_headsign, direction_id, shape_id, wheelchair_accessible, bikes_allowed, peak_offpeak])
+            else:
+                dict_trips[parts[route_id_nr]] = [[trip_id, service_id, trip_short_name, trip_headsign, direction_id, shape_id, wheelchair_accessible, bikes_allowed, peak_offpeak]]
+    file.close
+
+#---GTFS-reader------------------------------
+def read_gtfs(folder_path, new_file):
+    not_used = []
+    for filename in os.listdir(folder_path):
+        if filename == "agency.txt":
+            read_agency(folder_path + "/" + filename)
+        elif filename == "calendar_dates.txt":
+            read_calendar_dates(folder_path + "/" + filename)
+        elif filename == "calendar.txt":
+            read_calendar(folder_path + "/" + filename)
+        elif filename == "routes.txt":
+            read_routes(folder_path + "/" + filename)
+        elif filename == "shapes.txt":
+            read_shapes(folder_path + "/" + filename)
+        elif filename == "stop_times.txt":
+            read_stop_times(folder_path + "/" + filename)
+        elif filename == "stops.txt":
+            read_stops(folder_path + "/" + filename)
+        elif filename == "transfers.txt":
+            read_transfers(folder_path + "/" + filename)
+        elif filename == "trips.txt":
+            read_trips(folder_path + "/" + filename)
+        else:
+            not_used.append(filename)
+    if not_used != []:
+        print("Das Lesen der Dateien ["+str(not_used)+"] wird nicht unterstützt")
+
+    file_path = os.path.join("data/read", new_file + ".txt")
+    with open(file_path, 'w') as txt_file:
+        txt_file.write("name_official;WGS84_e;WGS84_n\n")
+        for element in dict_stops:
+            station_name_official = str(dict_stops[element][0])
+            station_coordinates_WGS84_e = str(dict_stops[element][2])
+            station_coordinates_WGS84_n = str(dict_stops[element][1])
+            txt_file.write(f"{station_name_official};{station_coordinates_WGS84_e};{station_coordinates_WGS84_n}\n")
+    print(f"Textdatei wurde erstellt: {file_path}")

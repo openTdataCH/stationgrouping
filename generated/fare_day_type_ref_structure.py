@@ -1,0 +1,12 @@
+from dataclasses import dataclass
+
+from generated.day_type_ref_structure import DayTypeRefStructure
+
+__NAMESPACE__ = "http://www.netex.org.uk/netex"
+
+
+@dataclass(kw_only=True)
+class FareDayTypeRefStructure(DayTypeRefStructure):
+    """
+    Type for Reference to a FARE DAY TYPE.
+    """

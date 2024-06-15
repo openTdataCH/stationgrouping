@@ -1,0 +1,17 @@
+from dataclasses import dataclass
+
+from generated.parking_properties_versioned_child_structure import (
+    ParkingPropertiesVersionedChildStructure,
+)
+
+__NAMESPACE__ = "http://www.netex.org.uk/netex"
+
+
+@dataclass(kw_only=True)
+class ParkingProperties(ParkingPropertiesVersionedChildStructure):
+    """
+    Properties of a PARKING.
+    """
+
+    class Meta:
+        namespace = "http://www.netex.org.uk/netex"

@@ -1,0 +1,31 @@
+from dataclasses import dataclass, field
+from typing import List
+
+from generated.strict_containment_aggregation_structure import (
+    StrictContainmentAggregationStructure,
+)
+from generated.vehicle_type_preference import VehicleTypePreference
+
+__NAMESPACE__ = "http://www.netex.org.uk/netex"
+
+
+@dataclass(kw_only=True)
+class VehicleTypePreferencesRelStructure(
+    StrictContainmentAggregationStructure
+):
+    """
+    Type for a list of VEHICLE TYPE PREFERENCEs.
+    """
+
+    class Meta:
+        name = "vehicleTypePreferences_RelStructure"
+
+    vehicle_type_preference: List[VehicleTypePreference] = field(
+        default_factory=list,
+        metadata={
+            "name": "VehicleTypePreference",
+            "type": "Element",
+            "namespace": "http://www.netex.org.uk/netex",
+            "min_occurs": 1,
+        },
+    )

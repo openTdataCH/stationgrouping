@@ -1,0 +1,17 @@
+from dataclasses import dataclass
+
+from generated.service_journey_pattern_version_structure import (
+    ServiceJourneyPatternVersionStructure,
+)
+
+__NAMESPACE__ = "http://www.netex.org.uk/netex"
+
+
+@dataclass(kw_only=True)
+class ServiceJourneyPattern(ServiceJourneyPatternVersionStructure):
+    """
+    The JOURNEY PATTERN for a (passenger carrying) SERVICE JOURNEY.
+    """
+
+    class Meta:
+        namespace = "http://www.netex.org.uk/netex"

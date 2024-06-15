@@ -1,0 +1,41 @@
+from dataclasses import dataclass, field
+from typing import List, Union
+
+from generated.containment_aggregation_structure import (
+    ContainmentAggregationStructure,
+)
+from generated.time_interval import TimeInterval
+from generated.time_interval_ref import TimeIntervalRef
+
+__NAMESPACE__ = "http://www.netex.org.uk/netex"
+
+
+@dataclass(kw_only=True)
+class TimeIntervalsRelStructure(ContainmentAggregationStructure):
+    """
+    Type for a list of TIME INTERVALs.
+    """
+
+    class Meta:
+        name = "timeIntervals_RelStructure"
+
+    time_interval_ref_or_time_interval: List[
+        Union[TimeIntervalRef, TimeInterval]
+    ] = field(
+        default_factory=list,
+        metadata={
+            "type": "Elements",
+            "choices": (
+                {
+                    "name": "TimeIntervalRef",
+                    "type": TimeIntervalRef,
+                    "namespace": "http://www.netex.org.uk/netex",
+                },
+                {
+                    "name": "TimeInterval",
+                    "type": TimeInterval,
+                    "namespace": "http://www.netex.org.uk/netex",
+                },
+            ),
+        },
+    )

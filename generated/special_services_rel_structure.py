@@ -1,0 +1,47 @@
+from dataclasses import dataclass, field
+from typing import List, Union
+
+from generated.containment_aggregation_structure import (
+    ContainmentAggregationStructure,
+)
+from generated.dated_special_service_ref import DatedSpecialServiceRef
+from generated.special_service import SpecialService
+from generated.special_service_ref import SpecialServiceRef
+
+__NAMESPACE__ = "http://www.netex.org.uk/netex"
+
+
+@dataclass(kw_only=True)
+class SpecialServicesRelStructure(ContainmentAggregationStructure):
+    """
+    Type for a list of SPECIAL SERVICE s.
+    """
+
+    class Meta:
+        name = "specialServices_RelStructure"
+
+    dated_special_service_ref_or_special_service_ref_or_special_service: List[
+        Union[DatedSpecialServiceRef, SpecialServiceRef, SpecialService]
+    ] = field(
+        default_factory=list,
+        metadata={
+            "type": "Elements",
+            "choices": (
+                {
+                    "name": "DatedSpecialServiceRef",
+                    "type": DatedSpecialServiceRef,
+                    "namespace": "http://www.netex.org.uk/netex",
+                },
+                {
+                    "name": "SpecialServiceRef",
+                    "type": SpecialServiceRef,
+                    "namespace": "http://www.netex.org.uk/netex",
+                },
+                {
+                    "name": "SpecialService",
+                    "type": SpecialService,
+                    "namespace": "http://www.netex.org.uk/netex",
+                },
+            ),
+        },
+    )

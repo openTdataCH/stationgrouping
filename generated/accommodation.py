@@ -1,0 +1,17 @@
+from dataclasses import dataclass
+
+from generated.accommodation_versioned_child_structure import (
+    AccommodationVersionedChildStructure,
+)
+
+__NAMESPACE__ = "http://www.netex.org.uk/netex"
+
+
+@dataclass(kw_only=True)
+class Accommodation(AccommodationVersionedChildStructure):
+    """
+    Allowed combinations of accommodation.
+    """
+
+    class Meta:
+        namespace = "http://www.netex.org.uk/netex"

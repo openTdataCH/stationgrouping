@@ -1,0 +1,41 @@
+from dataclasses import dataclass, field
+from typing import List, Union
+
+from generated.containment_aggregation_structure import (
+    ContainmentAggregationStructure,
+)
+from generated.site_facility_set import SiteFacilitySet
+from generated.site_facility_set_ref import SiteFacilitySetRef
+
+__NAMESPACE__ = "http://www.netex.org.uk/netex"
+
+
+@dataclass(kw_only=True)
+class SiteFacilitySetsRelStructure(ContainmentAggregationStructure):
+    """
+    SITE FACILITies associated with entity.
+    """
+
+    class Meta:
+        name = "siteFacilitySets_RelStructure"
+
+    site_facility_set_ref_or_site_facility_set: List[
+        Union[SiteFacilitySetRef, SiteFacilitySet]
+    ] = field(
+        default_factory=list,
+        metadata={
+            "type": "Elements",
+            "choices": (
+                {
+                    "name": "SiteFacilitySetRef",
+                    "type": SiteFacilitySetRef,
+                    "namespace": "http://www.netex.org.uk/netex",
+                },
+                {
+                    "name": "SiteFacilitySet",
+                    "type": SiteFacilitySet,
+                    "namespace": "http://www.netex.org.uk/netex",
+                },
+            ),
+        },
+    )

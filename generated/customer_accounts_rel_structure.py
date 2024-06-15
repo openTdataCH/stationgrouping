@@ -1,0 +1,41 @@
+from dataclasses import dataclass, field
+from typing import List, Union
+
+from generated.containment_aggregation_structure import (
+    ContainmentAggregationStructure,
+)
+from generated.customer_account import CustomerAccount
+from generated.customer_account_ref import CustomerAccountRef
+
+__NAMESPACE__ = "http://www.netex.org.uk/netex"
+
+
+@dataclass(kw_only=True)
+class CustomerAccountsRelStructure(ContainmentAggregationStructure):
+    """
+    Type for a list of CUSTOMER ACCOUNTs.
+    """
+
+    class Meta:
+        name = "customerAccounts_RelStructure"
+
+    customer_account_ref_or_customer_account: List[
+        Union[CustomerAccountRef, CustomerAccount]
+    ] = field(
+        default_factory=list,
+        metadata={
+            "type": "Elements",
+            "choices": (
+                {
+                    "name": "CustomerAccountRef",
+                    "type": CustomerAccountRef,
+                    "namespace": "http://www.netex.org.uk/netex",
+                },
+                {
+                    "name": "CustomerAccount",
+                    "type": CustomerAccount,
+                    "namespace": "http://www.netex.org.uk/netex",
+                },
+            ),
+        },
+    )
